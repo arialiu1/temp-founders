@@ -922,7 +922,7 @@ function initDensityChart() {
             callback: function(val, idx) {
               const v = xVals[idx];
               if (v === undefined) return '';
-              const nice = [0.00002, 0.003, 0.5, 72];
+              const nice = [0.00002, 0.003, 72];
               if (nice.some(n => Math.abs(v - n) / n < 0.3)) return fmtWealth(v);
               return null;
             }
