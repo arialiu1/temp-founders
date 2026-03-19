@@ -378,7 +378,7 @@ section { padding: 5rem 0; }
         <div class="chart-wrapper" style="height:320px;">
           <canvas id="densityChart"></canvas>
         </div>
-        <p class="chart-caption">Similar distributions, but the right tails diverge.</p>
+        <p class="chart-caption">Most founders cluster left of the break-even line. The few on the right drive the superstar effect.</p>
       </div>
       <div class="chart-panel">
         <h3>Who Benefits from Holding?</h3>
@@ -817,7 +817,14 @@ function initDensityChart() {
   // Simulated density curves (approximated from density.png)
   const xVals = [];
   for (let i = -5; i <= 3; i += 0.2) xVals.push(Math.pow(10, i));
-  const labels = xVals.map(v => v >= 1 ? v.toFixed(0) : v >= 0.01 ? v.toFixed(2) : v.toExponential(0));
+  function fmtWealth(v) {
+    if (v >= 1e3) return '$' + (v/1e3).toFixed(0) + 'T';
+    if (v >= 1) return '$' + v.toFixed(0) + 'B';
+    if (v >= 0.001) return '$' + (v*1000).toFixed(0) + 'M';
+    if (v >= 0.000001) return '$' + (v*1e6).toFixed(0) + 'K';
+    return '';
+  }
+  const labels = xVals.map(v => fmtWealth(v));
 
   function gaussian(x, mu, sigma) {
     return Math.exp(-0.5 * Math.pow((Math.log10(x) - mu) / sigma, 2)) / (sigma * Math.sqrt(2 * Math.PI));
@@ -827,8 +834,36 @@ function initDensityChart() {
   const firmData = xVals.map(x => gaussian(x, -0.9, 1.4) * 0.19);
   const totalData = xVals.map(x => gaussian(x, -0.85, 1.3) * 0.20);
 
+  // Find the index closest to $1B (break-even point from ratio chart)
+  const breakEvenIdx = xVals.findIndex(v => v >= 1);
+  const breakEvenPlugin = {
+    id: 'breakEvenLine',
+    afterDraw(chart) {
+      const xScale = chart.scales.x;
+      const yScale = chart.scales.y;
+      const ctx2 = chart.ctx;
+      const x = xScale.getPixelForValue(breakEvenIdx);
+      ctx2.save();
+      ctx2.strokeStyle = 'rgba(220, 50, 50, 0.6)';
+      ctx2.lineWidth = 2;
+      ctx2.setLineDash([6, 4]);
+      ctx2.beginPath();
+      ctx2.moveTo(x, yScale.top);
+      ctx2.lineTo(x, yScale.bottom);
+      ctx2.stroke();
+      // Label
+      ctx2.setLineDash([]);
+      ctx2.fillStyle = 'rgba(220, 50, 50, 0.8)';
+      ctx2.font = '600 11px Inter, system-ui, sans-serif';
+      ctx2.textAlign = 'left';
+      ctx2.fillText('← selling wins | holding wins →', x - 80, yScale.top + 14);
+      ctx2.restore();
+    }
+  };
+
   densityChart = new Chart(ctx, {
     type: 'line',
+    plugins: [breakEvenPlugin],
     data: {
       labels: labels,
       datasets: [
@@ -879,7 +914,7 @@ function initDensityChart() {
           display: false
         },
         x: {
-          title: { display: true, text: 'Wealth ($Bn, log scale)', font: { size: 11 } },
+          title: { display: true, text: 'Wealth (log scale)', font: { size: 11 } },
           ticks: {
             maxTicksLimit: 8,
             font: { size: 10 },
@@ -887,11 +922,7 @@ function initDensityChart() {
               const v = xVals[idx];
               if (v === undefined) return '';
               const nice = [0.00001, 0.001, 0.01, 0.1, 1, 10, 100, 1000];
-              if (nice.some(n => Math.abs(v - n) / n < 0.3)) {
-                if (v >= 1) return '$' + v;
-                if (v >= 0.001) return '$' + v;
-                return '';
-              }
+              if (nice.some(n => Math.abs(v - n) / n < 0.15)) return fmtWealth(v);
               return '';
             }
           },
