@@ -918,12 +918,13 @@ function initDensityChart() {
           title: { display: true, text: 'Wealth (log scale)', font: { size: 11 } },
           ticks: {
             autoSkip: false,
+            maxRotation: 0,
             font: { size: 10 },
             callback: function(val, idx) {
-              const v = xVals[idx];
-              if (v === undefined) return '';
-              const nice = [0.00002, 0.003, 72];
-              if (nice.some(n => Math.abs(v - n) / n < 0.3)) return fmtWealth(v);
+              // idx 2 = $25K, idx 12 = $3M, idx 34 = $63B
+              if (idx === 2) return '$25K';
+              if (idx === 12) return '$3M';
+              if (idx === 34) return '$63B';
               return null;
             }
           },
