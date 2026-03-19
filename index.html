@@ -835,8 +835,8 @@ function initDensityChart() {
   const firmData = xVals.map(x => gaussian(x, -2.4, 1.35) * 0.20);
   const totalData = xVals.map(x => gaussian(x, -2.45, 1.25) * 0.21);
 
-  // Break-even: IPO Value/Total crosses 1.0 at ~$10-30M (0.01-0.03B)
-  const breakEvenIdx = xVals.findIndex(v => v >= 0.01);
+  // Break-even: IPO Value/Total crosses 1.0 at ~$30M (0.03B) per ratio figure
+  const breakEvenIdx = xVals.findIndex(v => v >= 0.03);
   const breakEvenPlugin = {
     id: 'breakEvenLine',
     afterDraw(chart) {
