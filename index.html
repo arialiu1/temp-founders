@@ -917,14 +917,14 @@ function initDensityChart() {
         x: {
           title: { display: true, text: 'Wealth (log scale)', font: { size: 11 } },
           ticks: {
-            maxTicksLimit: 8,
+            autoSkip: false,
             font: { size: 10 },
             callback: function(val, idx) {
               const v = xVals[idx];
               if (v === undefined) return '';
               const nice = [0.00002, 0.0003, 0.003, 0.03, 0.5, 72];
               if (nice.some(n => Math.abs(v - n) / n < 0.3)) return fmtWealth(v);
-              return '';
+              return null;
             }
           },
           grid: { display: false }
