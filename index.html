@@ -1,0 +1,1055 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Superstar Founders: How IPO Wealth Is Built</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<style>
+/* ===== Reset & Base ===== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  color: #1a1a2e;
+  line-height: 1.7;
+  background: #fff;
+  overflow-x: hidden;
+}
+
+/* ===== Typography ===== */
+h1, h2, h3, h4 { line-height: 1.2; font-weight: 700; }
+h1 { font-size: clamp(2.2rem, 5vw, 4rem); }
+h2 { font-size: clamp(1.6rem, 3.5vw, 2.6rem); margin-bottom: 1rem; }
+h3 { font-size: clamp(1.2rem, 2.5vw, 1.6rem); margin-bottom: 0.75rem; }
+p { margin-bottom: 1rem; }
+a { color: #2563eb; text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ===== Layout ===== */
+.container { max-width: 1100px; margin: 0 auto; padding: 0 1.5rem; }
+section { padding: 5rem 0; }
+
+/* ===== Hero ===== */
+.hero {
+  background: linear-gradient(135deg, #0a1628 0%, #162447 40%, #1b3a5c 100%);
+  color: #fff;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle at 30% 40%, rgba(37, 99, 235, 0.08) 0%, transparent 50%),
+              radial-gradient(circle at 70% 60%, rgba(232, 168, 56, 0.06) 0%, transparent 50%);
+  animation: heroGlow 15s ease-in-out infinite alternate;
+}
+@keyframes heroGlow {
+  0% { transform: translate(0, 0); }
+  100% { transform: translate(-3%, -3%); }
+}
+.hero-content { position: relative; z-index: 1; max-width: 800px; padding: 2rem; }
+.hero-subtitle {
+  font-size: clamp(1rem, 2vw, 1.3rem);
+  color: rgba(255,255,255,0.7);
+  margin-bottom: 2rem;
+  font-weight: 400;
+}
+.hero-counter {
+  font-size: clamp(2.5rem, 6vw, 5rem);
+  font-weight: 800;
+  margin: 2rem 0;
+  letter-spacing: -0.02em;
+}
+.hero-counter .amount { color: #e8a838; }
+.hero-counter .arrow { color: rgba(255,255,255,0.4); margin: 0 0.3em; }
+.hero-tagline {
+  font-size: clamp(1rem, 2vw, 1.2rem);
+  color: rgba(255,255,255,0.6);
+  max-width: 600px;
+  margin: 0 auto 3rem;
+}
+.hero-authors {
+  font-size: 0.9rem;
+  color: rgba(255,255,255,0.45);
+  margin-top: 2rem;
+}
+.scroll-hint {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  color: rgba(255,255,255,0.4);
+  font-size: 0.85rem;
+  animation: bounce 2s infinite;
+}
+@keyframes bounce {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(8px); }
+}
+
+.chart-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  height: 400px;
+}
+.chart-caption {
+  text-align: center;
+  color: #888;
+  font-size: 0.85rem;
+  margin-top: 1rem;
+}
+
+.concept-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  display: inline-block;
+  flex-shrink: 0;
+}
+.dot-ipo { background: #6b8e23; }
+.dot-firm { background: #e8a838; }
+.dot-total { background: #4da6e8; }
+
+/* ===== Explorer Section ===== */
+.explorer {
+  background: #f8f9fc;
+  padding-bottom: 4rem;
+}
+.founder-tabs {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 2.5rem;
+}
+.founder-tab {
+  padding: 0.7rem 1.8rem;
+  border: 2px solid #d1d5db;
+  border-radius: 50px;
+  background: #fff;
+  color: #555;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+.founder-tab:hover {
+  border-color: #2563eb;
+  color: #2563eb;
+}
+.founder-tab.active {
+  background: #2563eb;
+  border-color: #2563eb;
+  color: #fff;
+}
+.explorer-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+@media (max-width: 900px) {
+  .explorer-grid { grid-template-columns: 1fr; }
+}
+.chart-panel {
+  background: #fff;
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+}
+.chart-panel h3 {
+  font-size: 1.1rem;
+  color: #333;
+  margin-bottom: 0.5rem;
+}
+.chart-panel .chart-wrapper { height: 350px; }
+
+.narrative-panel {
+  background: #fff;
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+}
+.narrative-panel h3 {
+  font-size: 1.3rem;
+  margin-bottom: 0.5rem;
+}
+.founder-meta {
+  color: #888;
+  font-size: 0.9rem;
+  margin-bottom: 1.5rem;
+}
+.narrative-panel p {
+  color: #444;
+  font-size: 1rem;
+}
+.insight-box {
+  background: linear-gradient(135deg, #f0f7ff, #e8f4f8);
+  border-left: 4px solid #2563eb;
+  border-radius: 8px;
+  padding: 1.2rem 1.5rem;
+  margin: 1.5rem 0;
+}
+.insight-box .insight-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #2563eb;
+  font-weight: 700;
+  margin-bottom: 0.3rem;
+}
+.insight-box p { margin: 0; color: #333; font-size: 0.95rem; }
+
+/* ===== Big Picture Section ===== */
+.big-picture { background: #fff; }
+.big-picture-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin-top: 2rem;
+}
+@media (max-width: 900px) {
+  .big-picture-grid { grid-template-columns: 1fr; }
+}
+.stat-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  margin: 3rem 0;
+}
+.stat-card {
+  text-align: center;
+  padding: 2rem 1rem;
+  background: #f8f9fc;
+  border-radius: 12px;
+}
+.stat-number {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #2563eb;
+  line-height: 1;
+  margin-bottom: 0.5rem;
+}
+.stat-label {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+/* ===== Credits ===== */
+.credits {
+  background: #0a1628;
+  color: rgba(255,255,255,0.7);
+  text-align: center;
+  padding: 4rem 0;
+}
+.credits h2 { color: #fff; font-size: 1.3rem; }
+.credits p { font-size: 0.9rem; }
+.credits a { color: #e8a838; }
+
+/* ===== Animations ===== */
+.fade-in {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+.fade-in.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ===== Scale Toggle ===== */
+.scale-toggle {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+  margin-bottom: 0.5rem;
+}
+.scale-btn {
+  padding: 0.3rem 0.8rem;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background: #fff;
+  color: #666;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.scale-btn.active {
+  background: #2563eb;
+  border-color: #2563eb;
+  color: #fff;
+}
+</style>
+</head>
+<body>
+
+<!-- ===== HERO ===== -->
+<section class="hero" style="min-height:auto;padding:4rem 0 3rem;">
+  <div class="hero-content">
+    <h1>Superstar Founders</h1>
+    <p class="hero-subtitle" style="margin-bottom:1rem;">How the wealthiest entrepreneurs build their fortunes after going public</p>
+    <div class="hero-counter">
+      <span class="amount" id="counter-start">$39M</span>
+      <span class="arrow">&rarr;</span>
+      <span class="amount" id="counter-end">$2.3B</span>
+    </div>
+    <p class="hero-tagline" style="margin-bottom:1.5rem;">
+      Average founder wealth grew 60&times; from 1996 to 2018.
+      But most founders would have been richer selling everything on day one.
+    </p>
+    <div style="display:flex;gap:1.5rem;justify-content:center;flex-wrap:wrap;margin:1.5rem 0 0;font-size:0.9rem;">
+      <span><span class="concept-dot dot-total" style="vertical-align:middle;"></span> <strong style="color:#fff;">Total Wealth</strong> <span style="color:rgba(255,255,255,0.5);">&mdash; actual</span></span>
+      <span><span class="concept-dot dot-ipo" style="vertical-align:middle;"></span> <strong style="color:#fff;">IPO Value</strong> <span style="color:rgba(255,255,255,0.5);">&mdash; what if sold at IPO?</span></span>
+      <span><span class="concept-dot dot-firm" style="vertical-align:middle;"></span> <strong style="color:#fff;">Never-Sell Value</strong> <span style="color:rgba(255,255,255,0.5);">&mdash; what if never sold?</span></span>
+    </div>
+    <p class="hero-authors">
+      <span style="font-size:0.8rem;">2,279 founders &middot; 1,498 IPOs &middot; 1996&ndash;2021</span>
+    </p>
+  </div>
+</section>
+
+<!-- ===== FOUNDER EXPLORER ===== -->
+<section class="explorer" id="explorer">
+  <div class="container">
+
+    <div class="founder-tabs fade-in">
+      <button class="founder-tab active" data-founder="bezos">Jeff Bezos</button>
+      <button class="founder-tab" data-founder="mccann">James McCann</button>
+      <button class="founder-tab" data-founder="spielberg">Steven Spielberg</button>
+    </div>
+
+    <div class="explorer-grid fade-in">
+      <div>
+        <div class="chart-panel">
+          <div class="scale-toggle">
+            <button class="scale-btn active" data-scale="log">Log Scale</button>
+            <button class="scale-btn" data-scale="linear">Linear</button>
+          </div>
+          <h3 id="wealthChartTitle">Bezos's Wealth (Bn)</h3>
+          <div class="chart-wrapper">
+            <canvas id="wealthChart"></canvas>
+          </div>
+        </div>
+        <div class="chart-panel" style="margin-top:1.5rem;">
+          <h3 id="ownershipChartTitle">Ownership vs. Excess Returns</h3>
+          <div class="chart-wrapper" style="height:280px;">
+            <canvas id="ownershipChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="narrative-panel" id="narrativePanel">
+        <!-- Filled by JS -->
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== BIG PICTURE ===== -->
+<section class="big-picture" id="bigpicture">
+  <div class="container">
+    <div class="fade-in">
+      <h2 style="text-align:center;">The Big Picture</h2>
+    </div>
+
+    <div class="chart-panel fade-in" style="max-width:850px;margin:0 auto 2rem;">
+      <h3>Founders' Wealth vs. Population Wealth Thresholds</h3>
+      <div class="chart-wrapper" style="height:380px;">
+        <canvas id="motivationChart"></canvas>
+      </div>
+      <p class="chart-caption">The median founder's IPO stake exceeds the top 0.1% threshold; the average surpasses the top 0.01%.</p>
+    </div>
+
+    <div class="big-picture-grid fade-in">
+      <div class="chart-panel">
+        <h3>Distribution of Founder Wealth</h3>
+        <div class="chart-wrapper" style="height:320px;">
+          <canvas id="densityChart"></canvas>
+        </div>
+        <p class="chart-caption">Similar distributions, but the right tails diverge.</p>
+      </div>
+      <div class="chart-panel">
+        <h3>Who Benefits from Holding?</h3>
+        <div class="chart-wrapper" style="height:320px;">
+          <canvas id="ratioChart"></canvas>
+        </div>
+        <p class="chart-caption">For the wealthiest founders, Never-Sell Value far exceeds IPO Value.</p>
+      </div>
+    </div>
+
+    <div class="insight-box fade-in" style="max-width:700px;margin:2rem auto 0;">
+      <div class="insight-label">Key Finding</div>
+      <p>
+        The median founder would be richer selling at the IPO. But the mean Never-Sell Value
+        exceeds the mean IPO Value &mdash; a small number of superstar founders who held
+        concentrated positions in outperforming firms built extraordinary wealth.
+        <strong>Superstar founders are built on superstar firms.</strong>
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CREDITS ===== -->
+<section class="credits">
+  <div class="container">
+    <h2>About This Research</h2>
+    <p style="margin:1rem 0;">
+      &ldquo;Superstar Founders&rdquo; by Andrea Eisfeldt, Aria Liu &amp; Yu Shi
+    </p>
+    <p>
+      Hand-collected dataset of 2,279 founders from 1,498 true IPOs (1996&ndash;2021).<br>
+      Data sources: SEC Form 424(b) prospectuses, proxy statements (DEF 14A), Form 4 filings, CRSP, Compustat.
+    </p>
+  </div>
+</section>
+
+<script>
+// ===== DATA =====
+// Approximated from paper figures (bar charts on log scale)
+
+const DATA = {
+  bezos: {
+    name: 'Jeff Bezos',
+    company: 'Amazon',
+    ipoYear: 1997,
+    years: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21],
+    ipoValue:    [0.18,0.28,0.25,0.50,0.48,0.47,0.48,0.49,0.49,0.55,0.60,0.55,0.44,0.55,0.62,0.65,0.75,1.20,1.50,1.50,1.80,5.50],
+    firmValue:   [0.18,0.35,12.0,9.00,2.50,2.50,4.00,5.50,4.20,4.20,8.00,9.50,10.0,15.0,20.0,26.0,22.0,38.0,52.0,75.0,115.,196.],
+    totalWealth: [0.18,0.80,12.5,9.50,2.70,2.70,4.00,5.50,4.20,4.30,8.00,9.50,10.0,15.0,22.0,25.0,22.0,38.0,45.0,60.0,85.0,160.],
+    ownership: {
+      years: [1997,1998,1999,2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018],
+      pct:   [42,  40,  36,  33,  30,  28,  25,  24,  24,  24,  22,  21,  20,  20,  19,  19,  18,  18,  17,  17,  17,  16],
+      excessRet: [0,10,50,0,-15,-10,-5,0,5,10,20,10,30,50,80,100,120,180,250,350,600,1400]
+    },
+    narrative: {
+      title: 'Jeff Bezos & Amazon',
+      subtitle: 'IPO: May 1997 &middot; Initial stake: ~42% &middot; IPO wealth: ~$0.18B',
+      story: `<p>When Amazon went public in May 1997, Jeff Bezos held about 42% of the company. His stake was worth roughly $180 million &mdash; already placing him among the wealthiest Americans.</p>
+        <p>What happened next is one of the greatest wealth creation stories in history. Amazon consistently outperformed the broader stock market, and Bezos held on to a substantial ownership stake throughout.</p>
+        <div class="insight-box">
+          <div class="insight-label">The Punchline</div>
+          <p>By year 21, Bezos's <strong>actual wealth reached ~$160 billion</strong>. His IPO Value &mdash; what he'd have had by selling at the IPO &mdash; would have been only ~$5.5 billion. Holding paid off <strong>30&times; over</strong>.</p>
+        </div>
+        <p>The Never-Sell Value (what if he'd never sold a share) actually <em>exceeds</em> his actual wealth, reaching ~$196 billion. Even Bezos left some money on the table by diversifying.</p>
+        <p>His ownership gradually declined from 42% to 16% through share sales, but Amazon's extraordinary growth more than compensated. The excess cumulative returns reached ~1,400% by 2018.</p>`
+    }
+  },
+  mccann: {
+    name: 'James McCann',
+    company: '1-800-Flowers',
+    ipoYear: 1999,
+    years: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18],
+    ipoValue:    [0.60,0.72,0.55,0.38,0.52,0.54,0.56,0.70,0.82,0.60,0.54,0.70,0.45,0.80,1.10,1.30,1.40,1.45,1.60],
+    firmValue:   [0.60,0.14,0.28,0.24,0.30,0.24,0.24,0.20,0.38,0.20,0.13,0.07,0.09,0.11,0.20,0.26,0.32,0.28,0.38],
+    totalWealth: [0.60,0.14,0.28,0.24,0.30,0.26,0.24,0.21,0.38,0.20,0.14,0.09,0.09,0.11,0.22,0.28,0.32,0.28,0.38],
+    ownership: {
+      years: [1999,2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017],
+      pct:   [60,  58,  56,  57,  58,  58,  57,  58,  57,  58,  56,  55,  54,  50,  48,  50,  52,  50,  48],
+      excessRet: [0,-30,-50,-60,-65,-70,-75,-80,-90,-100,-95,-100,-120,-150,-170,-180,-190,-210,-250]
+    },
+    narrative: {
+      title: 'James McCann & 1-800-Flowers',
+      subtitle: 'IPO: August 1999 &middot; Initial stake: ~60% &middot; IPO wealth: ~$0.60B',
+      story: `<p>James McCann took 1-800-Flowers public in August 1999, near the peak of the dot-com boom, holding about 60% of the company. His initial stake was worth roughly $600 million.</p>
+        <p>Unlike Bezos, McCann's company consistently underperformed the broader stock market over the next 18 years. The stock lost ground relative to the S&P 500 throughout the period.</p>
+        <div class="insight-box">
+          <div class="insight-label">The Punchline</div>
+          <p>McCann's IPO Value grew to <strong>~$1.6 billion</strong> by year 18 (thanks to market growth alone), while his actual wealth was only <strong>~$0.38 billion</strong>. He would have been <strong>4&times; richer</strong> selling everything at the IPO.</p>
+        </div>
+        <p>Despite the underperformance, McCann maintained remarkably stable ownership &mdash; staying around 50&ndash;60% throughout the period. His excess cumulative returns declined steadily, reaching approximately -250% by 2017.</p>
+        <p>McCann's story represents the <em>typical</em> founder experience: the median founder would have been wealthier liquidating at the IPO.</p>`
+    }
+  },
+  spielberg: {
+    name: 'Steven Spielberg',
+    company: 'DreamWorks Animation',
+    ipoYear: 2004,
+    years: [0,1,2,3,4,5,6,7,8,9,10,11,12],
+    ipoValue:    [2.30,2.50,2.90,3.30,3.10,2.00,2.70,3.30,3.50,4.00,4.80,5.50,5.50],
+    firmValue:   [2.30,2.20,1.50,1.90,1.40,1.30,2.30,1.60,1.10,1.20,1.40,1.50,2.40],
+    totalWealth: [2.30,2.20,1.50,1.80,1.60,1.20,1.50,1.80,1.90,2.10,2.60,3.00,3.10],
+    ownership: {
+      years: [2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016],
+      pct:   [60,  58,  8,   7,   7,   7,   6,   6,   5,   5,   5,   5],
+      excessRet: [0,-30,-70,-80,-50,-60,-40,-60,-80,-100,-120,-150]
+    },
+    narrative: {
+      title: 'Steven Spielberg & DreamWorks Animation',
+      subtitle: 'IPO: October 2004 &middot; Initial stake: ~60% &middot; IPO wealth: ~$2.3B',
+      story: `<p>Steven Spielberg's DreamWorks Animation went public in October 2004. Spielberg held about 60% of the company, with an initial stake worth approximately $2.3 billion.</p>
+        <p>DreamWorks' trajectory was more complex than either Bezos or McCann. The firm generally underperformed the market, but experienced periods of recovery and ultimately was acquired by NBCUniversal in 2016.</p>
+        <div class="insight-box">
+          <div class="insight-label">The Punchline</div>
+          <p>Spielberg's IPO Value grew to <strong>~$5.5 billion</strong> by year 12, while his actual wealth was <strong>~$3.1 billion</strong> and the Never-Sell Value was only <strong>~$2.4 billion</strong>. Like most founders, selling early would have been more profitable.</p>
+        </div>
+        <p>Notably, Spielberg's ownership dropped dramatically from ~60% to ~8% within just two years of the IPO, and continued declining to ~5%. Despite substantially reducing his stake, the IPO Value still outpaced his actual wealth.</p>
+        <p>The DreamWorks story shows that even iconic founders face the typical pattern: firm-specific risk usually doesn't pay off as well as broad market diversification.</p>`
+    }
+  }
+};
+
+// Motivation chart data (approximated from motivation.png)
+const MOTIVATION_DATA = {
+  years: [1996,1997,1998,1999,2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018],
+  mean:  [65,70,95,120,178,55,40,50,65,70,90,110,60,55,80,85,95,110,150,200,300,500,1300],
+  median:[25,28,22,30,35,15,12,14,16,17,18,20,11,10,13,14,15,16,18,20,22,25,30],
+  top001:[65,68,72,80,85,70,65,68,72,75,78,82,60,55,65,70,75,80,85,90,95,100,110],
+  top01: [9, 9.5,10,10.5,11,10,9.5,10,10.5,11,11,11.5,10,9.5,10.5,11,11.5,12,12.5,13,13.5,14,15]
+};
+
+// ===== CHART COLORS =====
+const COLORS = {
+  ipo: { bg: 'rgba(107, 142, 35, 0.85)', border: '#6b8e23' },
+  firm: { bg: 'rgba(232, 168, 56, 0.85)', border: '#e8a838' },
+  total: { bg: 'rgba(77, 166, 232, 0.85)', border: '#4da6e8' }
+};
+
+// ===== CHART INSTANCES =====
+let wealthChart, ownershipChart, motivationChart, densityChart, ratioChart;
+let currentFounder = 'bezos';
+let currentScale = 'log';
+
+// ===== UTILITY: format billions =====
+function fmtBn(v) {
+  if (v >= 1) return '$' + v.toFixed(1) + 'B';
+  return '$' + (v * 1000).toFixed(0) + 'M';
+}
+
+// ===== INIT MOTIVATION CHART =====
+function initMotivationChart() {
+  const ctx = document.getElementById('motivationChart').getContext('2d');
+  motivationChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: MOTIVATION_DATA.years,
+      datasets: [
+        {
+          label: "Founders' Mean Wealth",
+          data: MOTIVATION_DATA.mean,
+          borderColor: '#e8a838',
+          backgroundColor: 'rgba(232,168,56,0.1)',
+          borderWidth: 3,
+          fill: false,
+          pointRadius: 3,
+          pointHoverRadius: 6,
+          tension: 0.3
+        },
+        {
+          label: "Founders' Median Wealth",
+          data: MOTIVATION_DATA.median,
+          borderColor: '#e8a838',
+          borderDash: [6, 4],
+          backgroundColor: 'transparent',
+          borderWidth: 2,
+          fill: false,
+          pointRadius: 2,
+          pointHoverRadius: 5,
+          tension: 0.3
+        },
+        {
+          label: 'Top 0.01% Threshold',
+          data: MOTIVATION_DATA.top001,
+          borderColor: '#1a1a2e',
+          backgroundColor: 'transparent',
+          borderWidth: 2,
+          fill: false,
+          pointRadius: 0,
+          tension: 0.3
+        },
+        {
+          label: 'Top 0.1% Threshold',
+          data: MOTIVATION_DATA.top01,
+          borderColor: '#1a1a2e',
+          borderDash: [6, 4],
+          backgroundColor: 'transparent',
+          borderWidth: 2,
+          fill: false,
+          pointRadius: 0,
+          tension: 0.3
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: { usePointStyle: true, padding: 20, font: { size: 12 } }
+        },
+        tooltip: {
+          callbacks: {
+            label: (ctx) => ctx.dataset.label + ': $' + ctx.parsed.y.toFixed(0) + 'M'
+          }
+        }
+      },
+      scales: {
+        y: {
+          type: 'logarithmic',
+          title: { display: true, text: 'Wealth ($M, log scale)', font: { size: 12 } },
+          ticks: {
+            callback: (v) => {
+              if ([3, 9, 25, 65, 180, 500, 1300].includes(Math.round(v))) return '$' + Math.round(v) + 'M';
+              return '';
+            }
+          },
+          grid: { color: 'rgba(0,0,0,0.06)' }
+        },
+        x: {
+          grid: { display: false },
+          ticks: { font: { size: 11 } }
+        }
+      }
+    }
+  });
+}
+
+// ===== INIT WEALTH CHART =====
+function initWealthChart() {
+  const ctx = document.getElementById('wealthChart').getContext('2d');
+  const d = DATA[currentFounder];
+  wealthChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: d.years.map(y => 'Yr ' + y),
+      datasets: [
+        {
+          label: 'IPO Value',
+          data: d.ipoValue,
+          backgroundColor: COLORS.ipo.bg,
+          borderColor: COLORS.ipo.border,
+          borderWidth: 1,
+          borderRadius: 3
+        },
+        {
+          label: 'Never-Sell Value',
+          data: d.firmValue,
+          backgroundColor: COLORS.firm.bg,
+          borderColor: COLORS.firm.border,
+          borderWidth: 1,
+          borderRadius: 3
+        },
+        {
+          label: 'Total Wealth',
+          data: d.totalWealth,
+          backgroundColor: COLORS.total.bg,
+          borderColor: COLORS.total.border,
+          borderWidth: 1,
+          borderRadius: 3
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: { duration: 800, easing: 'easeOutQuart' },
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: { usePointStyle: true, padding: 15, font: { size: 11 } }
+        },
+        tooltip: {
+          callbacks: {
+            title: (items) => {
+              const yr = d.years[items[0].dataIndex];
+              return 'Year ' + yr + ' after IPO (' + (d.ipoYear + yr) + ')';
+            },
+            label: (ctx) => ctx.dataset.label + ': ' + fmtBn(ctx.parsed.y)
+          }
+        }
+      },
+      scales: {
+        y: {
+          type: currentScale === 'log' ? 'logarithmic' : 'linear',
+          title: { display: true, text: 'Wealth ($Bn)', font: { size: 11 } },
+          ticks: {
+            callback: (v) => {
+              if (currentScale === 'log') {
+                const nice = [0.05,0.1,0.2,0.5,1,2,5,10,20,50,100,200];
+                if (nice.some(n => Math.abs(v - n) < n * 0.01)) return '$' + v;
+                return '';
+              }
+              return '$' + v;
+            }
+          },
+          grid: { color: 'rgba(0,0,0,0.06)' }
+        },
+        x: {
+          grid: { display: false },
+          ticks: {
+            font: { size: 10 },
+            maxRotation: 0,
+            callback: function(val, idx) {
+              const d2 = DATA[currentFounder];
+              if (d2.years.length > 15) return idx % 2 === 0 ? this.getLabelForValue(val) : '';
+              return this.getLabelForValue(val);
+            }
+          }
+        }
+      }
+    }
+  });
+}
+
+// ===== INIT OWNERSHIP CHART =====
+function initOwnershipChart() {
+  const ctx = document.getElementById('ownershipChart').getContext('2d');
+  const d = DATA[currentFounder];
+  ownershipChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: d.ownership.years,
+      datasets: [
+        {
+          label: 'Ownership %',
+          data: d.ownership.pct,
+          borderColor: '#e8a838',
+          backgroundColor: 'rgba(232,168,56,0.1)',
+          borderWidth: 3,
+          fill: true,
+          pointRadius: 2,
+          pointHoverRadius: 5,
+          tension: 0.3,
+          yAxisID: 'y'
+        },
+        {
+          label: 'Excess Cumulative Returns (%)',
+          data: d.ownership.excessRet,
+          borderColor: '#2563eb',
+          backgroundColor: 'transparent',
+          borderWidth: 2,
+          fill: false,
+          pointRadius: 1,
+          pointHoverRadius: 4,
+          tension: 0.3,
+          yAxisID: 'y1'
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: { duration: 800 },
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: { usePointStyle: true, padding: 15, font: { size: 11 } }
+        },
+        tooltip: {
+          callbacks: {
+            label: (ctx) => {
+              if (ctx.datasetIndex === 0) return 'Ownership: ' + ctx.parsed.y + '%';
+              return 'Excess Returns: ' + ctx.parsed.y + '%';
+            }
+          }
+        }
+      },
+      scales: {
+        y: {
+          position: 'left',
+          title: { display: true, text: 'Ownership %', color: '#e8a838', font: { size: 11 } },
+          ticks: { color: '#e8a838', callback: v => v + '%' },
+          grid: { color: 'rgba(0,0,0,0.06)' }
+        },
+        y1: {
+          position: 'right',
+          title: { display: true, text: 'Excess Returns %', color: '#2563eb', font: { size: 11 } },
+          ticks: { color: '#2563eb', callback: v => v + '%' },
+          grid: { display: false }
+        },
+        x: {
+          grid: { display: false },
+          ticks: { font: { size: 10 }, maxRotation: 45 }
+        }
+      }
+    }
+  });
+}
+
+// ===== UPDATE CHARTS =====
+function updateCharts(founder) {
+  currentFounder = founder;
+  const d = DATA[founder];
+
+  // Update wealth chart
+  document.getElementById('wealthChartTitle').textContent = d.name + "'s Wealth (Bn)";
+  wealthChart.data.labels = d.years.map(y => 'Yr ' + y);
+  wealthChart.data.datasets[0].data = d.ipoValue;
+  wealthChart.data.datasets[1].data = d.firmValue;
+  wealthChart.data.datasets[2].data = d.totalWealth;
+  wealthChart.options.scales.y.type = currentScale === 'log' ? 'logarithmic' : 'linear';
+  wealthChart.update('active');
+
+  // Update ownership chart
+  document.getElementById('ownershipChartTitle').textContent = d.name + "'s Ownership vs. " + d.company + "'s Excess Returns";
+  ownershipChart.data.labels = d.ownership.years;
+  ownershipChart.data.datasets[0].data = d.ownership.pct;
+  ownershipChart.data.datasets[1].data = d.ownership.excessRet;
+  ownershipChart.update('active');
+
+  // Update narrative
+  const np = document.getElementById('narrativePanel');
+  np.innerHTML = `
+    <h3>${d.narrative.title}</h3>
+    <div class="founder-meta">${d.narrative.subtitle}</div>
+    ${d.narrative.story}
+  `;
+}
+
+// ===== INIT DENSITY CHART =====
+function initDensityChart() {
+  const ctx = document.getElementById('densityChart').getContext('2d');
+  // Simulated density curves (approximated from density.png)
+  const xVals = [];
+  for (let i = -5; i <= 3; i += 0.2) xVals.push(Math.pow(10, i));
+  const labels = xVals.map(v => v >= 1 ? v.toFixed(0) : v >= 0.01 ? v.toFixed(2) : v.toExponential(0));
+
+  function gaussian(x, mu, sigma) {
+    return Math.exp(-0.5 * Math.pow((Math.log10(x) - mu) / sigma, 2)) / (sigma * Math.sqrt(2 * Math.PI));
+  }
+
+  const ipoData = xVals.map(x => gaussian(x, -1.0, 1.2) * 0.20);
+  const firmData = xVals.map(x => gaussian(x, -0.9, 1.4) * 0.19);
+  const totalData = xVals.map(x => gaussian(x, -0.85, 1.3) * 0.20);
+
+  densityChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          label: 'IPO Value',
+          data: ipoData,
+          borderColor: COLORS.ipo.border,
+          backgroundColor: 'rgba(107,142,35,0.15)',
+          borderWidth: 2.5,
+          fill: true,
+          pointRadius: 0,
+          tension: 0.4
+        },
+        {
+          label: 'Never-Sell Value',
+          data: firmData,
+          borderColor: COLORS.firm.border,
+          backgroundColor: 'rgba(232,168,56,0.15)',
+          borderWidth: 2.5,
+          fill: true,
+          pointRadius: 0,
+          tension: 0.4
+        },
+        {
+          label: 'Total Wealth',
+          data: totalData,
+          borderColor: COLORS.total.border,
+          backgroundColor: 'rgba(77,166,232,0.15)',
+          borderWidth: 2.5,
+          fill: true,
+          pointRadius: 0,
+          tension: 0.4
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: { usePointStyle: true, padding: 15, font: { size: 11 } }
+        },
+        tooltip: { enabled: false }
+      },
+      scales: {
+        y: {
+          display: false
+        },
+        x: {
+          title: { display: true, text: 'Wealth ($Bn, log scale)', font: { size: 11 } },
+          ticks: {
+            maxTicksLimit: 8,
+            font: { size: 10 },
+            callback: function(val, idx) {
+              const v = xVals[idx];
+              if (v === undefined) return '';
+              const nice = [0.00001, 0.001, 0.01, 0.1, 1, 10, 100, 1000];
+              if (nice.some(n => Math.abs(v - n) / n < 0.3)) {
+                if (v >= 1) return '$' + v;
+                if (v >= 0.001) return '$' + v;
+                return '';
+              }
+              return '';
+            }
+          },
+          grid: { display: false }
+        }
+      }
+    }
+  });
+}
+
+// ===== INIT RATIO CHART =====
+function initRatioChart() {
+  const ctx = document.getElementById('ratioChart').getContext('2d');
+  // Approximated from ratio.png
+  const wealthLevels = ['$0.001B','$0.01B','$0.1B','$1B','$10B','$100B'];
+  const ipoRatio = [3.0, 3.0, 2.8, 1.5, 0.5, 0.05];
+  const firmRatio = [0.5, 0.5, 0.5, 0.6, 0.8, 1.3];
+
+  ratioChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: wealthLevels,
+      datasets: [
+        {
+          label: 'IPO Value / Total Wealth',
+          data: ipoRatio,
+          borderColor: COLORS.ipo.border,
+          backgroundColor: 'rgba(107,142,35,0.1)',
+          borderWidth: 3,
+          fill: true,
+          pointRadius: 4,
+          pointHoverRadius: 7,
+          tension: 0.4
+        },
+        {
+          label: 'Never-Sell Value / Total Wealth',
+          data: firmRatio,
+          borderColor: COLORS.firm.border,
+          backgroundColor: 'rgba(232,168,56,0.1)',
+          borderWidth: 3,
+          fill: true,
+          pointRadius: 4,
+          pointHoverRadius: 7,
+          tension: 0.4
+        },
+        {
+          label: 'Ratio = 1 (break-even)',
+          data: [1, 1, 1, 1, 1, 1],
+          borderColor: 'rgba(0,0,0,0.3)',
+          borderDash: [6, 4],
+          borderWidth: 1,
+          fill: false,
+          pointRadius: 0
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: { usePointStyle: true, padding: 15, font: { size: 11 } }
+        },
+        tooltip: {
+          callbacks: {
+            label: (ctx) => ctx.dataset.label + ': ' + ctx.parsed.y.toFixed(2) + 'x'
+          }
+        }
+      },
+      scales: {
+        y: {
+          title: { display: true, text: 'Ratio to Total Wealth', font: { size: 11 } },
+          ticks: { callback: v => v.toFixed(1) + 'x' },
+          grid: { color: 'rgba(0,0,0,0.06)' }
+        },
+        x: {
+          title: { display: true, text: 'Total Wealth Level', font: { size: 11 } },
+          grid: { display: false },
+          ticks: { font: { size: 10 } }
+        }
+      }
+    }
+  });
+}
+
+// ===== SCROLL ANIMATIONS =====
+function initScrollAnimations() {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+}
+
+// ===== HERO COUNTER ANIMATION =====
+function animateCounter() {
+  const el = document.getElementById('counter-end');
+  const target = 2.3;
+  const duration = 2500;
+  const start = performance.now();
+
+  function update(now) {
+    const elapsed = now - start;
+    const progress = Math.min(elapsed / duration, 1);
+    const eased = 1 - Math.pow(1 - progress, 3); // easeOutCubic
+    const current = eased * target;
+    el.textContent = '$' + current.toFixed(1) + 'B';
+    if (progress < 1) requestAnimationFrame(update);
+  }
+
+  // Start animation when hero is visible
+  setTimeout(() => requestAnimationFrame(update), 500);
+}
+
+// ===== EVENT LISTENERS =====
+function initEventListeners() {
+  // Founder tabs
+  document.querySelectorAll('.founder-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.founder-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      updateCharts(tab.dataset.founder);
+    });
+  });
+
+  // Scale toggle
+  document.querySelectorAll('.scale-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.scale-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentScale = btn.dataset.scale;
+      wealthChart.options.scales.y.type = currentScale === 'log' ? 'logarithmic' : 'linear';
+      wealthChart.update('active');
+    });
+  });
+}
+
+// ===== INIT =====
+document.addEventListener('DOMContentLoaded', () => {
+  initMotivationChart();
+  initWealthChart();
+  initOwnershipChart();
+  initDensityChart();
+  initRatioChart();
+  initScrollAnimations();
+  initEventListeners();
+  animateCounter();
+
+  // Set initial narrative
+  updateCharts('bezos');
+});
+</script>
+
+</body>
+</html>
