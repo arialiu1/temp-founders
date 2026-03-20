@@ -135,12 +135,12 @@ section { padding: 5rem 0; }
   margin-bottom: 2.5rem;
 }
 .founder-tab {
-  padding: 0.7rem 1.8rem;
+  padding: 0.5rem 1.2rem;
   border: 2px solid #d1d5db;
   border-radius: 50px;
   background: #fff;
   color: #555;
-  font-size: 1rem;
+  font-size: 0.9rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s;
@@ -301,13 +301,12 @@ section { padding: 5rem 0; }
     <h1>Superstar Founders</h1>
     <p class="hero-subtitle" style="margin-bottom:1rem;">How the wealthiest entrepreneurs build their fortunes after going public</p>
     <div class="hero-counter">
-      <span class="amount" id="counter-start">$39M</span>
+      <span class="amount" id="counter-start">$76M</span>
       <span class="arrow">&rarr;</span>
-      <span class="amount" id="counter-end">$2.3B</span>
+      <span class="amount" id="counter-end">$798M</span>
     </div>
     <p class="hero-tagline" style="margin-bottom:1.5rem;">
-      Average founder wealth grew 60&times; from 1996 to 2018.
-      But most founders would have been richer selling everything on day one.
+      Mean founder wealth at IPO grew from $76M to $798M (1996&ndash;2021), even as founder ownership fell from 38% to 17%.
     </p>
     <div style="display:flex;gap:1.5rem;justify-content:center;flex-wrap:wrap;margin:1.5rem 0 0;font-size:0.9rem;">
       <span><span class="concept-dot dot-total" style="vertical-align:middle;"></span> <strong style="color:#fff;">Total Wealth</strong> <span style="color:rgba(255,255,255,0.5);">&mdash; actual</span></span>
@@ -315,7 +314,7 @@ section { padding: 5rem 0; }
       <span><span class="concept-dot dot-firm" style="vertical-align:middle;"></span> <strong style="color:#fff;">Never-Sell Value</strong> <span style="color:rgba(255,255,255,0.5);">&mdash; what if never sold?</span></span>
     </div>
     <p class="hero-authors">
-      <span style="font-size:0.8rem;">2,279 founders &middot; 1,498 IPOs &middot; 1996&ndash;2021</span>
+      <span style="font-size:0.8rem;">2,424 founders &middot; 2,131 IPOs &middot; 1996&ndash;2024</span>
     </p>
   </div>
 </section>
@@ -326,8 +325,10 @@ section { padding: 5rem 0; }
 
     <div class="founder-tabs fade-in">
       <button class="founder-tab active" data-founder="bezos">Jeff Bezos</button>
+      <button class="founder-tab" data-founder="brin">Sergey Brin</button>
+      <button class="founder-tab" data-founder="page">Larry Page</button>
+      <button class="founder-tab" data-founder="zuckerberg">Mark Zuckerberg</button>
       <button class="founder-tab" data-founder="mccann">James McCann</button>
-      <button class="founder-tab" data-founder="spielberg">Steven Spielberg</button>
     </div>
 
     <div class="explorer-grid fade-in">
@@ -409,7 +410,7 @@ section { padding: 5rem 0; }
       &ldquo;Superstar Founders&rdquo; by Andrea Eisfeldt, Aria Liu &amp; Yu Shi
     </p>
     <p>
-      Hand-collected dataset of 2,279 founders from 1,498 true IPOs (1996&ndash;2021).<br>
+      Hand-collected dataset of 2,424 founders from 2,131 true IPOs (1996&ndash;2024).<br>
       Data sources: SEC Form 424(b) prospectuses, proxy statements (DEF 14A), Form 4 filings, CRSP, Compustat.
     </p>
   </div>
@@ -417,96 +418,146 @@ section { padding: 5rem 0; }
 
 <script>
 // ===== DATA =====
-// Approximated from paper figures (bar charts on log scale)
+// Computed from replication data (bn.csv, CRSP daily, Fama-French factors)
 
 const DATA = {
   bezos: {
     name: 'Jeff Bezos',
     company: 'Amazon',
     ipoYear: 1997,
-    years: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21],
-    ipoValue:    [0.18,0.28,0.25,0.50,0.48,0.47,0.48,0.49,0.49,0.55,0.60,0.55,0.44,0.55,0.62,0.65,0.75,1.20,1.50,1.50,1.80,5.50],
-    firmValue:   [0.18,0.80,12.0,7.00,2.50,2.50,4.00,5.50,4.00,4.20,7.00,8.00,8.00,12.0,17.0,26.0,22.0,38.0,52.0,80.0,120.,196.],
-    totalWealth: [0.18,0.80,12.0,7.00,2.50,2.50,4.00,5.50,4.00,4.20,7.00,8.00,8.00,12.0,17.0,25.0,22.0,35.0,45.0,60.0,85.0,160.],
+    years: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27],
+    ipoValue:    [0.23,0.32,0.37,0.45,0.34,0.34,0.27,0.37,0.38,0.44,0.51,0.48,0.32,0.46,0.53,0.54,0.64,0.76,0.89,0.86,1.02,1.22,1.32,1.29,2.05,2.09,1.98,2.53],
+    firmValue:   [0.23,0.94,10.43,7.86,1.74,1.69,3.05,5.69,4.18,4.31,7.43,9.50,9.26,17.11,23.32,22.36,32.37,37.62,52.80,69.53,106.31,181.23,218.74,285.66,400.83,359.91,242.93,448.50],
+    totalWealth: [0.23,0.94,10.43,7.90,1.81,1.76,3.01,5.50,4.20,4.41,7.18,8.90,8.38,15.16,20.27,19.61,27.60,32.19,43.90,55.50,82.50,135.49,161.68,205.75,293.47,270.18,202.75,331.93],
     ownership: {
-      years: [1997,1998,1999,2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018],
-      pct:   [42,  40,  36,  33,  30,  28,  25,  24,  24,  24,  22,  21,  20,  20,  19,  19,  18,  18,  17,  17,  17,  16],
-      excessRet: [0,10,50,0,-15,-10,-5,0,5,10,20,10,30,50,80,100,120,180,250,350,600,1400]
+      years: [1997,1998,1999,2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024],
+      pct:   [41.4,41.0,36.5,33.6,32.4,29.8,27.6,25.7,24.7,24.3,24.7,23.8,22.6,20.7,19.5,19.5,19.1,18.3,18.0,17.6,16.9,16.3,16.0,15.1,14.0,12.7,12.3,10.8],
+      excessRet: [0,266,4331,3189,603,583,1200,2292,1636,1664,2977,3882,3849,7170,9813,9391,13658,15864,22343,29559,45324,77493,93597,122416,171665,154032,103722,191981]
     },
     narrative: {
       title: 'Jeff Bezos & Amazon',
-      subtitle: 'IPO: May 1997 &middot; Initial stake: ~42% &middot; IPO wealth: ~$0.18B',
-      story: `<p>When Amazon went public in May 1997, Jeff Bezos held about 42% of the company. His stake was worth roughly $180 million &mdash; already placing him among the wealthiest Americans.</p>
+      subtitle: 'IPO: May 1997 &middot; Initial stake: 41% &middot; IPO wealth: $232M',
+      story: `<p>When Amazon went public in May 1997, Jeff Bezos held 41% of the company. His 9.9 million shares were worth $232 million at $23.50 per share &mdash; already placing him among the wealthiest Americans.</p>
         <p>What happened next is one of the greatest wealth creation stories in history. Amazon consistently outperformed the broader stock market, and Bezos held on to a substantial ownership stake throughout.</p>
         <div class="insight-box">
           <div class="insight-label">The Punchline</div>
-          <p>By year 21, Bezos's <strong>actual wealth reached ~$160 billion</strong>. His IPO Value &mdash; what he'd have had by selling at the IPO &mdash; would have been only ~$5.5 billion. Holding paid off <strong>30&times; over</strong>.</p>
+          <p>By year 27 (2024), Bezos's <strong>actual wealth reached $332 billion</strong>. His IPO Value &mdash; what he'd have had by selling at the IPO and investing in the market &mdash; would have been only $2.5 billion. Holding paid off <strong>131&times; over</strong>.</p>
         </div>
-        <p>The Never-Sell Value (what if he'd never sold a share) actually <em>exceeds</em> his actual wealth, reaching ~$196 billion. Even Bezos left some money on the table by diversifying.</p>
-        <p>His ownership gradually declined from 42% to 16% through share sales, but Amazon's extraordinary growth more than compensated. The excess cumulative returns reached ~1,400% by 2018.</p>`
+        <p>The Never-Sell Value (what if he'd never sold a share) actually <em>exceeds</em> his actual wealth, reaching $449 billion. Even Bezos left over $100 billion on the table by diversifying.</p>
+        <p>His ownership gradually declined from 41% to 11% through share sales, but Amazon's extraordinary growth more than compensated.</p>`
+    }
+  },
+  brin: {
+    name: 'Sergey Brin',
+    company: 'Alphabet',
+    ipoYear: 2004,
+    years: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20],
+    ipoValue:    [3.86,4.28,4.89,5.51,5.25,3.27,4.94,5.79,5.94,7.09,8.64,9.98,9.78,11.65,13.39,15.01,14.63,22.93,22.60,22.10,27.67],
+    firmValue:   [3.86,7.39,15.01,18.13,17.35,13.36,21.65,20.23,23.45,31.31,43.11,21.46,27.25,35.58,39.70,46.15,49.14,88.52,92.09,81.14,132.36],
+    totalWealth: [3.86,7.35,14.61,17.45,16.69,12.29,19.66,19.24,21.63,28.04,37.31,25.98,29.00,36.21,41.00,46.80,47.68,80.49,81.73,75.62,109.44],
+    ownership: {
+      years: [2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024],
+      pct:   [14.0,13.1,10.6,9.2,9.1,9.1,9.0,8.4,7.9,7.3,6.9,6.4,6.0,5.6,5.6,5.6,5.5,5.5,5.4,5.4,5.4],
+      excessRet: [0,81,262,327,313,261,433,374,453,627,893,851,1156,1538,1706,1997,2162,3984,4177,3624,6128]
+    },
+    narrative: {
+      title: 'Sergey Brin & Alphabet (Google)',
+      subtitle: 'IPO: August 2004 &middot; Initial stake: 14% &middot; IPO wealth: $3.9B',
+      story: `<p>When Google went public in August 2004, Sergey Brin held 38.5 million shares worth $3.9 billion at $100.34 per share. He co-founded Google with Larry Page in 1998 from a Stanford dorm room.</p>
+        <p>Google's trajectory mirrors Amazon's: relentless outperformance of the broader stock market over two decades. Unlike Bezos, Brin started with a lower ownership stake but benefited from Google's extraordinary growth.</p>
+        <div class="insight-box">
+          <div class="insight-label">The Punchline</div>
+          <p>By year 20 (2024), Brin's <strong>actual wealth reached $109 billion</strong>. His IPO Value would have been $27.7 billion. The Never-Sell Value reached $132 billion. Holding paid off <strong>4&times;</strong> vs. selling at the IPO.</p>
+        </div>
+        <p>Brin's ownership gradually declined from 14% to 5.4% through share sales, but with Alphabet's stock price rising from $100 to over $170 per share (post-20:1 split), his wealth multiplied enormously.</p>
+        <p>Excess cumulative returns reached 6,128% by 2024 &mdash; a superstar founder on a superstar firm.</p>`
+    }
+  },
+  page: {
+    name: 'Larry Page',
+    company: 'Alphabet',
+    ipoYear: 2004,
+    years: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20],
+    ipoValue:    [3.87,4.29,4.91,5.52,5.27,3.28,4.95,5.80,5.95,7.11,8.67,10.00,9.81,11.68,13.42,15.05,14.66,22.99,22.66,22.16,27.75],
+    firmValue:   [3.87,7.41,15.05,18.18,17.40,13.40,21.71,20.29,23.51,31.39,43.23,21.51,27.32,35.68,39.81,46.27,49.27,88.76,92.34,81.36,132.72],
+    totalWealth: [3.87,7.37,14.65,17.51,16.75,12.37,19.79,19.31,21.74,28.22,37.61,26.06,29.16,36.44,41.25,47.11,48.06,81.31,82.64,76.30,111.09],
+    ownership: {
+      years: [2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024],
+      pct:   [14.1,13.2,10.8,9.4,9.3,9.2,9.1,8.6,8.0,7.5,7.0,6.6,6.1,5.8,5.8,5.8,5.8,5.8,5.6,5.7,5.8],
+      excessRet: [0,81,262,327,313,261,433,374,453,627,893,851,1156,1538,1706,1997,2162,3984,4177,3624,6128]
+    },
+    narrative: {
+      title: 'Larry Page & Alphabet (Google)',
+      subtitle: 'IPO: August 2004 &middot; Initial stake: 14% &middot; IPO wealth: $3.9B',
+      story: `<p>Larry Page co-founded Google with Brin and held 38.6 million shares at the 2004 IPO, worth $3.9 billion. His trajectory closely mirrors Brin's &mdash; both co-founders built extraordinary wealth from the same superstar firm.</p>
+        <p>Page held slightly more shares than Brin and sold at a similar pace. Both founders maintained meaningful ownership stakes throughout, declining gradually from 14% to around 5.8%.</p>
+        <div class="insight-box">
+          <div class="insight-label">The Punchline</div>
+          <p>By 2024, Page's <strong>actual wealth reached $111 billion</strong>, while the Never-Sell Value was $133 billion. Holding, rather than selling at the IPO, created an additional <strong>$83 billion</strong> in wealth.</p>
+        </div>
+        <p>The Google co-founders illustrate the core paper finding: superstar founders are built on superstar firms. Both Brin and Page became among the world's wealthiest people by holding concentrated positions in a firm that massively outperformed the market.</p>`
+    }
+  },
+  zuckerberg: {
+    name: 'Mark Zuckerberg',
+    company: 'Meta',
+    ipoYear: 2012,
+    years: [0,1,2,3,4,5,6,7,8,9,10,11,12],
+    ipoValue:    [20.41,25.58,31.39,35.94,36.00,40.78,47.89,53.29,51.41,81.46,85.44,79.57,96.83],
+    firmValue:   [20.41,14.33,32.16,43.52,63.49,74.41,87.82,95.60,93.52,166.79,118.68,118.23,256.80],
+    totalWealth: [20.41,14.97,31.62,41.56,57.51,67.12,79.17,86.50,84.36,146.49,115.42,112.55,211.13],
+    ownership: {
+      years: [2012,2013,2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024],
+      pct:   [23.6,20.1,16.6,15.2,14.8,14.3,13.8,13.2,12.9,12.8,12.9,13.7,13.6],
+      excessRet: [0,-55,4,37,135,165,196,207,206,418,163,189,785]
+    },
+    narrative: {
+      title: 'Mark Zuckerberg & Meta (Facebook)',
+      subtitle: 'IPO: May 2012 &middot; Initial stake: 24% &middot; IPO wealth: $20.4B',
+      story: `<p>When Facebook went public in May 2012, Mark Zuckerberg held 534 million shares (24% of the company), worth $20.4 billion at $38.23 per share &mdash; one of the largest IPO-day founder stakes in history.</p>
+        <p>Meta's path was not smooth. The stock initially dropped below the IPO price (year 1 actual wealth fell to $15B), and crashed again in 2022 during the metaverse pivot (to $115B). But strong recoveries followed each time.</p>
+        <div class="insight-box">
+          <div class="insight-label">The Punchline</div>
+          <p>By year 12 (2024), Zuckerberg's <strong>actual wealth reached $211 billion</strong>. The IPO Value (selling at IPO) would have been $97 billion. The Never-Sell Value reached $257 billion. Holding paid off <strong>2.2&times;</strong> vs. selling.</p>
+        </div>
+        <p>Zuckerberg gradually reduced ownership from 24% to 14%, but retained enough stake that Meta's 785% excess cumulative returns translated to enormous wealth. The Never-Sell Value exceeds actual wealth by $46 billion &mdash; even Zuckerberg diversified more than was optimal in hindsight.</p>`
     }
   },
   mccann: {
     name: 'James McCann',
     company: '1-800-Flowers',
     ipoYear: 1999,
-    years: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18],
-    ipoValue:    [0.60,0.72,0.55,0.38,0.52,0.54,0.56,0.70,0.82,0.60,0.54,0.70,0.45,0.80,1.10,1.30,1.40,1.45,1.60],
-    firmValue:   [0.60,0.14,0.28,0.24,0.30,0.24,0.24,0.20,0.38,0.20,0.13,0.07,0.09,0.11,0.20,0.26,0.32,0.28,0.38],
-    totalWealth: [0.60,0.14,0.28,0.24,0.30,0.26,0.24,0.21,0.38,0.20,0.14,0.09,0.09,0.11,0.22,0.28,0.32,0.28,0.38],
+    years: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,20,21,22,23],
+    ipoValue:    [0.67,0.74,0.57,0.49,0.60,0.64,0.73,0.85,0.97,0.57,0.73,0.83,0.89,1.02,1.33,1.49,1.59,1.67,2.07,2.54,2.99,4.09,3.41],
+    firmValue:   [0.62,0.14,0.37,0.27,0.36,0.30,0.25,0.20,0.45,0.16,0.17,0.06,0.10,0.13,0.21,0.30,0.35,0.35,0.34,0.50,0.93,1.08,0.28],
+    totalWealth: [0.67,0.14,0.37,0.27,0.36,0.30,0.25,0.20,0.45,0.16,0.17,0.06,0.11,0.13,0.21,0.30,0.35,0.35,0.36,0.52,0.95,1.18,0.93],
     ownership: {
-      years: [1999,2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017],
-      pct:   [60,  58,  56,  57,  58,  58,  57,  58,  57,  58,  56,  55,  54,  50,  48,  50,  52,  50,  48],
-      excessRet: [0,-30,-50,-60,-65,-70,-75,-80,-90,-100,-95,-100,-120,-150,-170,-180,-190,-210,-250]
+      years: [1999,2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2019,2020,2021,2022],
+      pct:   [56.5,56.5,56.6,56.0,55.8,55.8,56.1,56.5,56.6,56.8,57.0,57.1,54.1,53.6,52.8,53.0,45.5,45.6,56.4,56.4,33.9,5.3,33.6],
+      excessRet: [0,-90,-27,-30,-32,-49,-70,-95,-74,-59,-83,-114,-117,-132,-166,-175,-183,-195,-257,-301,-299,-441,-468]
     },
     narrative: {
       title: 'James McCann & 1-800-Flowers',
-      subtitle: 'IPO: August 1999 &middot; Initial stake: ~60% &middot; IPO wealth: ~$0.60B',
-      story: `<p>James McCann took 1-800-Flowers public in August 1999, near the peak of the dot-com boom, holding about 60% of the company. His initial stake was worth roughly $600 million.</p>
-        <p>Unlike Bezos, McCann's company consistently underperformed the broader stock market over the next 18 years. The stock lost ground relative to the S&P 500 throughout the period.</p>
+      subtitle: 'IPO: August 1999 &middot; Initial stake: 57% &middot; IPO wealth: $666M',
+      story: `<p>James McCann took 1-800-Flowers public in August 1999, near the peak of the dot-com boom, holding 57% of the company through dual-class shares. His initial stake was worth $666 million.</p>
+        <p>Unlike the superstar founders above, McCann's company consistently underperformed the broader stock market over the next two decades.</p>
         <div class="insight-box">
           <div class="insight-label">The Punchline</div>
-          <p>McCann's IPO Value grew to <strong>~$1.6 billion</strong> by year 18 (thanks to market growth alone), while his actual wealth was only <strong>~$0.38 billion</strong>. He would have been <strong>4&times; richer</strong> selling everything at the IPO.</p>
+          <p>By year 23 (2022), McCann's IPO Value &mdash; what he'd have had by selling everything and investing in the market &mdash; grew to <strong>$3.4 billion</strong>. His actual wealth was only <strong>$0.9 billion</strong>. He would have been <strong>3.7&times; richer</strong> selling at the IPO.</p>
         </div>
-        <p>Despite the underperformance, McCann maintained remarkably stable ownership &mdash; staying around 50&ndash;60% throughout the period. His excess cumulative returns declined steadily, reaching approximately -250% by 2017.</p>
+        <p>McCann maintained stable ownership (~55%) for over a decade through his controlling B shares, but the cumulative excess returns sank to -468%. The Never-Sell Value fell to just $0.3 billion.</p>
         <p>McCann's story represents the <em>typical</em> founder experience: the median founder would have been wealthier liquidating at the IPO.</p>`
-    }
-  },
-  spielberg: {
-    name: 'Steven Spielberg',
-    company: 'DreamWorks Animation',
-    ipoYear: 2004,
-    years: [0,1,2,3,4,5,6,7,8,9,10,11,12],
-    ipoValue:    [2.30,2.50,2.90,3.30,3.10,2.00,2.70,3.30,3.50,4.00,4.80,5.50,5.50],
-    firmValue:   [2.30,2.20,1.50,1.90,1.40,1.30,2.30,1.60,1.10,1.20,1.40,1.50,2.40],
-    totalWealth: [2.30,2.20,1.50,1.80,1.60,1.20,1.50,1.80,1.90,2.10,2.60,3.00,3.10],
-    ownership: {
-      years: [2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016],
-      pct:   [60,  58,  8,   7,   7,   7,   6,   6,   5,   5,   5,   5],
-      excessRet: [0,-30,-70,-80,-50,-60,-40,-60,-80,-100,-120,-150]
-    },
-    narrative: {
-      title: 'Steven Spielberg & DreamWorks Animation',
-      subtitle: 'IPO: October 2004 &middot; Initial stake: ~60% &middot; IPO wealth: ~$2.3B',
-      story: `<p>Steven Spielberg's DreamWorks Animation went public in October 2004. Spielberg held about 60% of the company, with an initial stake worth approximately $2.3 billion.</p>
-        <p>DreamWorks' trajectory was more complex than either Bezos or McCann. The firm generally underperformed the market, but experienced periods of recovery and ultimately was acquired by NBCUniversal in 2016.</p>
-        <div class="insight-box">
-          <div class="insight-label">The Punchline</div>
-          <p>Spielberg's IPO Value grew to <strong>~$5.5 billion</strong> by year 12, while his actual wealth was <strong>~$3.1 billion</strong> and the Never-Sell Value was only <strong>~$2.4 billion</strong>. Like most founders, selling early would have been more profitable.</p>
-        </div>
-        <p>Notably, Spielberg's ownership dropped dramatically from ~60% to ~8% within just two years of the IPO, and continued declining to ~5%. Despite substantially reducing his stake, the IPO Value still outpaced his actual wealth.</p>
-        <p>The DreamWorks story shows that even iconic founders face the typical pattern: firm-specific risk usually doesn't pay off as well as broad market diversification.</p>`
     }
   }
 };
 
-// Motivation chart data (approximated from motivation.png)
+// Motivation chart data (computed from replication data: crsp-comp3.csv, founder_IPO, WID, CPI-adjusted to 2021$)
 const MOTIVATION_DATA = {
-  years: [1996,1997,1998,1999,2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018],
-  mean:  [65,70,95,120,178,55,40,50,65,70,90,110,60,55,80,85,95,110,150,200,300,500,1300],
-  median:[24,22,18,20,22,12,10,11,12,13,14,15,9, 8, 10,11,12,12,13,14,14,13,14],
-  top001:[65,68,72,80,85,70,65,68,72,75,78,82,60,55,65,70,75,80,85,90,95,100,110],
-  top01: [9, 9.5,10,10.5,11,10,9.5,10,10.5,11,11,11.5,10,9.5,10.5,11,11.5,12,12.5,13,13.5,14,15]
+  years: [1996,1997,1998,1999,2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018,2019,2020,2021,2022,2023],
+  mean:  [134,108,176,350,331,113,127,43,640,124,156,84,78,120,197,385,895,297,160,194,99,438,327,481,975,634,63,300],
+  median:[33,47,57,122,117,69,68,24,43,22,52,56,17,64,31,71,64,21,25,24,16,90,66,67,53,147,29,27],
+  top001:[27.4,30.9,36.0,39.6,41.2,41.4,38.8,39.1,45.1,50.2,54.4,55.4,49.6,41.9,47.8,49.4,54.3,53.6,58.1,61.6,61.6,64.2,65.5,67.6,77.9,92.4,85.2,83.0],
+  top01: [6.2,6.8,7.7,8.4,8.5,8.5,8.1,8.2,9.2,10.2,10.9,11.1,9.7,8.6,9.3,9.5,10.0,10.2,11.1,11.5,11.7,12.5,12.8,13.4,15.0,16.7,15.6,15.2]
 };
 
 // ===== CHART COLORS =====
@@ -602,7 +653,7 @@ function initMotivationChart() {
           title: { display: true, text: 'Wealth ($M, log scale)', font: { size: 12 } },
           ticks: {
             callback: (v) => {
-              if ([3, 9, 25, 65, 180, 500, 1300].includes(Math.round(v))) return '$' + Math.round(v) + 'M';
+              if ([3, 9, 25, 65, 180, 500, 1300, 3000].includes(Math.round(v))) return '$' + Math.round(v) + 'M';
               return '';
             }
           },
@@ -679,7 +730,7 @@ function initWealthChart() {
           ticks: {
             callback: (v) => {
               if (currentScale === 'log') {
-                const nice = [0.05,0.1,0.2,0.5,1,2,5,10,20,50,100,200];
+                const nice = [0.05,0.1,0.2,0.5,1,2,5,10,20,50,100,200,500];
                 if (nice.some(n => Math.abs(v - n) < n * 0.01)) return '$' + v;
                 return '';
               }
@@ -695,6 +746,7 @@ function initWealthChart() {
             maxRotation: 0,
             callback: function(val, idx) {
               const d2 = DATA[currentFounder];
+              if (d2.years.length > 20) return idx % 3 === 0 ? this.getLabelForValue(val) : '';
               if (d2.years.length > 15) return idx % 2 === 0 ? this.getLabelForValue(val) : '';
               return this.getLabelForValue(val);
             }
@@ -1025,23 +1077,23 @@ function initScrollAnimations() {
   document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
 }
 
+
 // ===== HERO COUNTER ANIMATION =====
 function animateCounter() {
   const el = document.getElementById('counter-end');
-  const target = 2.3;
+  const target = 798;
   const duration = 2500;
   const start = performance.now();
 
   function update(now) {
     const elapsed = now - start;
     const progress = Math.min(elapsed / duration, 1);
-    const eased = 1 - Math.pow(1 - progress, 3); // easeOutCubic
+    const eased = 1 - Math.pow(1 - progress, 3);
     const current = eased * target;
-    el.textContent = '$' + current.toFixed(1) + 'B';
+    el.textContent = '$' + Math.round(current) + 'M';
     if (progress < 1) requestAnimationFrame(update);
   }
 
-  // Start animation when hero is visible
   setTimeout(() => requestAnimationFrame(update), 500);
 }
 
